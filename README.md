@@ -2,7 +2,7 @@
 
 ## Intro
 
-The configurations in the repository would create the required components for a Vanilla rails application running in an AWS EKS Cluster and provision AWS components requiring the same.
+The configurations in the repository would create the required components for a Vanilla rails application running in an AWS EKS Cluster and provision AWS components requiring the same. The Gitlab CI file also takes care of automating the build and deploy process.
 
 ## Prerequisites
 
@@ -23,9 +23,9 @@ The configurations in the repository would create the required components for a 
 
 Repository has two separate terraform configurations and a CI pipelike file in this repository:
 
-### 1. `create_cluster`
+### 1. `Create Cluster`
  
-It contains Terraform configurations to create an EKS Cluster using Terraform and all the related AWS Components. This configuration creates the following resources:
+Folder `create_cluster` contains Terraform configurations to create an EKS Cluster using Terraform and all the related AWS Components. This configuration creates the following resources:
 
 - EKS Cluster: AWS managed Kubernetes cluster of master servers
 - AutoScaling Group containing 2 m4.large instances based on the latest EKS Amazon Linux 2 AMI: Operator managed Kuberneted worker nodes for running Kubernetes service deployments
@@ -36,9 +36,9 @@ Creating an EKS using these configuration is totally optional.
 
 *NOTE: There are other ways to create an EKS cluster like Using [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html) or By using AWS console. Our primary goal to add this configuration was to setup most of the things using Terraform.*
 
-### 2. `deploy_rails_app`
+### 2. `Deploy Rails App`
 
-This folder contains configurations to create the cluster components (like Kubernetes deployment, Pods, Service, Secrets) and other external AWS resources required for hosting the rails app like (RDS instance for DB, etc).
+Folder `deploy_rails_app` contains configurations to create the cluster components (like Kubernetes deployment, Pods, Service, Secrets) and other external AWS resources required for hosting the rails app like (RDS instance for DB, etc).
 
 **IMPORTANT:**
 - This configuration needs to run after you have created a cluster and your `kubectl` is pointing to the newly created cluster.

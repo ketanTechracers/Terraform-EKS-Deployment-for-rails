@@ -1,12 +1,13 @@
-image: custom_image_with_kubectl_terraform_installed:latest
+# Custom docker image with Kubectl, AWS and Terraform preinstalled
+image: kubectl_terraform:latest
 
 before_script:
   # configure AWS CLI
   - aws configure set aws_access_key_id $AWS_KEY
   - aws configure set aws_secret_access_key $AWS_SECRET
   - aws configure set region "us-east-1"
-  # TODO: Point kubectl to our target eks cluster
-
+  # Point kubectl to our target eks cluster
+  - aws eks --region "us-east-1" update-kubeconfig --name demo
 
 stages:
   - test
