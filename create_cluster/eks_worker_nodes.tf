@@ -84,7 +84,7 @@ data "aws_ami" "eks-worker" {
   }
 
   most_recent = true
-  owners      = ["602401143452"] # Amazon EKS AMI Account ID
+  owners      = ["$(var.eks_ami_id)"] # Amazon EKS AMI Account ID
 }
 
 # EKS currently documents this required userdata for EKS worker nodes to
@@ -117,7 +117,7 @@ resource "aws_launch_configuration" "demo" {
 resource "aws_autoscaling_group" "demo" {
   desired_capacity     = 2
   launch_configuration = "${aws_launch_configuration.demo.id}"
-  max_size             = 2
+  max_size             = 3
   min_size             = 1
   name                 = "terraform-eks-demo"
   vpc_zone_identifier  = "${aws_subnet.demo[*].id}"

@@ -78,7 +78,7 @@ resource "aws_security_group_rule" "demo-cluster-ingress-node-https" {
 }
 
 resource "aws_security_group_rule" "demo-cluster-ingress-workstation-https" {
-  cidr_blocks       = ["0.0.0.0/0"]
+  cidr_blocks       = ["0.0.0.0/0"]  # Work stations to whitelist that can access cluster APIs
   description       = "Allow workstation to communicate with the cluster API Server"
   from_port         = 443
   protocol          = "tcp"

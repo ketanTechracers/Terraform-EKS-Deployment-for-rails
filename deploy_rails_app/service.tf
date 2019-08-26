@@ -1,20 +1,20 @@
-resource "kubernetes_service" "rails_lb" {
+resource "kubernetes_service" "rails_load_balancer" {
   metadata {
     name = "rails-example"
   }
   spec {
     selector = {
-      App = kubernetes_deployment.rails_app_deployment.spec.0.template.0.metadata[0].labels.App
+      App = "${var.rails_deployment_label}"
     }
     port {
       port        = 80
-      target_port = 80
+      target_port = "${var.rails_env_variables.normal.port}"
     }
 
     type = "LoadBalancer"
   }
 }
 
-output "lb_ip" {
-  value = kubernetes_service.rails_lb.load_balancer_ingress[0].ip
+output "load_balancer_ip" {
+  value = "${kubernetes_service.rails_load_balancer.load_balancer_ingress[0].ip}"
 }
