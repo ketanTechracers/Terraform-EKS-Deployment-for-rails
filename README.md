@@ -21,7 +21,7 @@ The configurations in the repository would create the required components for a 
 
 ## Components
 
-Repository has two separate terraform configurations in this repository:
+Repository has two separate terraform configurations and a CI pipelike file in this repository:
 
 ### 1. `create_cluster`
  
@@ -52,6 +52,19 @@ The configurations mentioned here creates the following resources:
 - A Kubernetes Secret having sensitive information encrypted safely
 - A Kuberenetes Deployment launching 2 Pods running rails app container within each of them
 - A Load Balancer Service that balances the requests incoming between 2 rails instances
+
+### 3. `CI/CD Pipeline`
+- The CI/CD Pipeline is setup in `.gitlab-ci.yml` that runs Everytime the new code is merged in master branch
+- Before it runs, the `terraform.tfvars` file's content must be configured as a secret ENV in gitlab CI dashboard. Below are the steps to do so:
+  1. Export original `terraform.tfvars` file with base64 encoding by command `cat myfile.txt | base64`
+  2. Copy result and insert it to Gitlab project settings
+    `(Your project → Settings → CI/CD → Environment variables)`
+- The Pipeline script will run as following:
+  1. run all the unit tests
+  2. build and push an updated docker image with updated tag
+  3. Update that tag's info in `terraform.tfvars` file
+  4. Roll out deployment in terraform with updated docker image
+
 
 ## Design Considerations
 

@@ -1,0 +1,53 @@
+image: custom_image_with_kubectl_terraform_installed:latest
+
+before_script:
+  # configure AWS CLI
+  - aws configure set aws_access_key_id $AWS_KEY
+  - aws configure set aws_secret_access_key $AWS_SECRET
+  - aws configure set region "us-east-1"
+  # TODO: Point kubectl to our target eks cluster
+
+
+stages:
+  - test
+  - build
+  - deploy
+
+Tests:
+  stage: test
+  script:
+    - echo "=== 5/1 RUNNING TESTS ===="
+    - bundle exec rails test -d
+
+Build:
+  stage: build
+  except:
+    - master
+  script:
+    - echo "=== 5/2 BUILDING DOCKER IMAGE ===="
+    - DEVISE_SECRET="$(cat $VALUES_FILE | grep DEVISE_SECRET | awk '{print $2}')"
+    - COMMIT_SHA="$(git rev-parse HEAD)"
+    - COMMIT_MSG="$(git log -1 --pretty=%B)"
+    - docker build . --label "commit_sha=$COMMIT_SHA" --label "commit_msg=$COMMIT_MSG"
+    - IMAGE_ID="$(sudo docker images -f label=commit_sha=$COMMIT_SHA | head -n 2 | tail -n 1 | awk '{print $3}')"
+    - echo Succesfully built image $IMAGE_ID
+    - docker tag $IMAGE_ID $REPO:$TAG
+    - echo "=== 5/3 PUSHING DOCKER IMAGE ===="
+    - docker push $REPO:$TAG
+    - echo "=== 5/4 UPDATING TAGS IN terraform.tfvars FILE ===="
+    # Get the contents of terraform.tfvars file and update the `rails_docker_tag` variable
+    # to the latest pushed docker tag  
+    - echo $TFVARS | base64 -d > ./deploy_rails_app/terraform.tfvars
+    - $TFVARS_FILE = "./deploy_rails_app/terraform.tfvars"
+    - line_number="$(cat $TFVARS_FILE | grep -n rails_docker_tag | awk '{print $1}' | sed 's/://')"
+    - cmd="${line_number}s/.*/rails_docker_tag = ${TAG}/"
+    - sed -i "$cmd" "$TFVARS_FILE"
+
+Deploy:
+  stage: deploy
+  retry: 2
+  only:
+    - master
+  script:
+    - echo "=== 5/5 DEPLOYING UPDATED RAILS APP ===="
+    - make rails-up

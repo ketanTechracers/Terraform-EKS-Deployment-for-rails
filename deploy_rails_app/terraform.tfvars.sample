@@ -18,10 +18,8 @@ rails_number_of_instance = 2
 rails_port = 3000
 rails_deployment_label = "ScalableRailsDeployment"
 rails_pod_cpu_utilization_limit = 75
-rails_docker {
-  image = "ketanstechracers/rails-dockerized"
-  tag = "0.0.2"
-}
+rails_docker_image = "ketanstechracers/rails-dockerized"
+rails_docker_tag = "0.0.2"
 
 # Rails Env Variables
 rails_env_variables {
