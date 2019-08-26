@@ -40,7 +40,9 @@ Creating an EKS using these configuration is totally optional.
 
 This folder contains configurations to create the cluster components (like Kubernetes deployment, Pods, Service, Secrets) and other external AWS resources required for hosting the rails app like (RDS instance for DB, etc).
 
-**NOTE: This configuration needs to run after you have created a cluster and your `kubectl` is pointing to the newly created cluster.**
+**IMPORTANT:**
+- This configuration needs to run after you have created a cluster and your `kubectl` is pointing to the newly created cluster.
+- In order for this terraform config to work you need to add the `deploy_rails_app/terraform.tfvars` file which is gitignored. A sample content of tfvars file is given in the repository.
 
 To point your `kubectl` to target EKS cluster, you can look at [Creating kubeconfig instructions](https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html) on official EKS docs.
 

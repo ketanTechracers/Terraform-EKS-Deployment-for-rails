@@ -1,0 +1,41 @@
+# DB Variables
+variable "db_username" {
+  default = "user"
+}
+
+variable "db_password" {
+  default = "pass"
+}
+
+db_instance_type = "db.t2.micro"
+db_allocated_storage = 20
+
+# EKS Variables
+eks_ami_id = "602401143452"
+
+# Rails Config Variables
+rails_number_of_instance = 2
+rails_port = 3000
+rails_deployment_label = "ScalableRailsDeployment"
+rails_pod_cpu_utilization_limit = 75
+rails_docker {
+  image = "ketanstechracers/rails-dockerized"
+  tag = "0.0.2"
+}
+
+# Rails Env Variables
+rails_env_variables {
+  # Non sensitive env variables
+  normal {
+    RAILS_ENV = "production"
+    PORT      = 3000
+  }
+
+  # Sensitive env variables
+  secret {
+    RAILS_MASTER_KEY  = "fake"
+    SECRET_KEY_BASE   = "fake"
+    DB_USERNAME       = "${var.db_username}"
+    DB_PASSWORD       = "${var.password}"
+  }
+}
