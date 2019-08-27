@@ -84,7 +84,7 @@ The configurations mentioned here creates the following resources:
 
 - All the components of the ecosystem inside EKS and the related RDS are inside a single VPC.
 - Inside the VPC, there's security group having only http and https port opened for the outside world. 
-- A security rule named `demo-cluster-ingress-workstation-https` is also added to whitelist any given set of IP addresses that can access the https port
+- A security rule named `terraform_eks_demo_cluster-ingress-workstation-https` is also added to whitelist any given set of IP addresses that can access the https port
 - The RDS instance is setup so that it only responds to request coming from the mentioned security group via `vpc_security_group_ids` param. This param only passes the security group in which our rails app instance are present.
 
 ### 4. Scalability and Monitoring

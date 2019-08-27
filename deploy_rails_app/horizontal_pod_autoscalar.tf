@@ -1,4 +1,4 @@
-resource "rails_horizontal_pod_autoscaler" "rails_hpa" {
+resource "kubernetes_horizontal_pod_autoscaler" "rails_hpa" {
   metadata {
     name = "rails_hpa"
   }
